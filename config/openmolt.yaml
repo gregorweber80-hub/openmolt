@@ -1,0 +1,15 @@
+name: OpenMolt
+security:
+  mode: secure
+  require_explicit_send_approval: true
+  allowed_domains:
+    - duckduckgo.com
+    - github.com
+    - google.com
+ollama:
+  host: http://127.0.0.1:11434
+  model: llama3.1
+telegram:
+  enabled: false
+  bot_token: null
+  allowed_chat_ids: []
