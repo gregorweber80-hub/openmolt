@@ -1,0 +1,4 @@
+body { font-family: sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+section { border: 1px solid #334155; border-radius: 8px; margin: 1rem 0; padding: 1rem; background: #1e293b; }
+input, textarea, button { width: 100%; margin-top: .4rem; margin-bottom: .6rem; padding: .5rem; }
+button { background: #2563eb; color: white; border: 0; cursor: pointer; }
