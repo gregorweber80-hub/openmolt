@@ -10,7 +10,7 @@ from openmolt.services.ollama_client import OllamaClient
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("OpenMolt Bot bereit. Schreibe mir eine Nachricht.")
+    await update.message.reply_text("OpenMolt bot is ready. Send me a message.")
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -19,7 +19,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     allowed = set(cfg.telegram.allowed_chat_ids)
     chat_id = update.effective_chat.id
     if allowed and chat_id not in allowed:
-        await update.message.reply_text("Chat nicht autorisiert.")
+        await update.message.reply_text("Chat not authorized.")
         return
 
     client = OllamaClient(cfg.ollama.host, cfg.ollama.model)
@@ -31,7 +31,7 @@ def run_bot() -> None:
     settings = Settings()
     cfg = load_app_config(settings.config_path)
     if not cfg.telegram.enabled or not cfg.telegram.bot_token:
-        raise RuntimeError("Telegram ist nicht aktiviert. Bitte config/openmolt.yaml pflegen.")
+        raise RuntimeError("Telegram is not enabled. Please configure config/openmolt.yaml.")
 
     app = ApplicationBuilder().token(cfg.telegram.bot_token).build()
     app.add_handler(CommandHandler("start", start))
