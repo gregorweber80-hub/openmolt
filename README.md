@@ -4,7 +4,7 @@ OpenMolt is a personal, modular assistant inspired by OpenClaw, focused on **loc
 
 ## Description
 
-OpenMolt is designed to run locally and connect your assistant workflows in one place:
+OpenMolt is designed to run locally and connect assistant workflows in one place:
 - chat with a local Ollama model,
 - browse/search the web with security policy checks,
 - draft and send emails through a controlled approval flow,
@@ -15,8 +15,8 @@ It supports dashboard usage, terminal commands, and Telegram bot messaging.
 
 ## Features
 
-- Ollama LLM integration (local, configurable)
-- Web browsing & search (allowlist-aware in secure mode)
+- Ollama LLM integration (local, configurable; default `qwen2.5-coder:latest`)
+- Web browsing & search (allowlist-aware in `secure` mode)
 - Gmail compose + send flow with explicit approval
 - Gateway module for account credential/login flow preparation
 - Skill plugins via `openmolt/skills/*.py`
@@ -25,12 +25,40 @@ It supports dashboard usage, terminal commands, and Telegram bot messaging.
   - Terminal (`openmolt-terminal`)
   - Telegram bot (`openmolt-telegram`)
 
-## Quickstart
+## Installation
+
+### Option A (recommended): install script
 
 ```bash
-python -m venv .venv
+bash scripts/install_openmolt.sh
+```
+
+This script:
+- creates `.venv`,
+- installs OpenMolt with `pip install -e .`,
+- pulls the default Ollama model when `ollama` is available,
+- prints next startup steps.
+
+### Option B: manual install
+
+```bash
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .
+python -m pip install --upgrade pip
+python -m pip install -e .
+ollama pull qwen2.5-coder:latest
+```
+
+## First run
+
+```bash
+# 1) Start Ollama locally
+ollama serve
+
+# 2) Run one-time setup wizard
+openmolt-terminal init
+
+# 3) Start dashboard
 uvicorn openmolt.app:app --host 0.0.0.0 --port 8000
 ```
 
@@ -38,31 +66,43 @@ Then open: http://localhost:8000
 
 ## Terminal
 
+On first productive use, OpenMolt runs a one-time setup wizard (model + Telegram + safety acknowledgment).
+
 ```bash
+# explicit setup
+openmolt-terminal init
+
+# regular chat (auto-triggers setup if needed)
 openmolt-terminal chat "Create a daily plan"
 
-# Download a file securely via terminal (allowlist enforced in secure mode)
+# secure file download from terminal
 openmolt-terminal download "https://github.com/octocat/Spoon-Knife/archive/refs/heads/main.zip" --output-dir downloads
 ```
 
 ## Telegram
 
 1. Create a bot via BotFather.
-2. Set `config/openmolt.yaml`:
-   - `telegram.enabled: true`
-   - `telegram.bot_token: <TOKEN>`
-   - optional: `allowed_chat_ids`
+2. Run `openmolt-terminal init` and insert the token (or edit `config/openmolt.yaml`).
 3. Start:
 
 ```bash
 openmolt-telegram
 ```
 
+With pairing enabled, the first unauthorized chat receives a pairing code.
+Confirm in Telegram with `/pair <code>` and the chat ID is saved to `allowed_chat_ids`.
+
 ## Security
 
 - `security.mode: secure` enforces an allowlist for URL access.
 - Email sending requires explicit approval by default (`approved=true`).
 - Telegram access can be restricted via `allowed_chat_ids`.
+
+## Troubleshooting
+
+- If `ollama serve` is not running, model calls fail.
+- If dependencies such as `pydantic` are missing, tests/imports fail.
+- If Telegram token is invalid, bot startup fails.
 
 ## Adding Skills
 
