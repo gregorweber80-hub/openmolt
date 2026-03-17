@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ name }} Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>{{ name }} Dashboard</h1>
+  <p>Sicherheitsmodus: <strong>{{ security_mode }}</strong> | Ollama Modell: <strong>{{ ollama_model }}</strong></p>
+
+  <section>
+    <h2>LLM Chat</h2>
+    <form method="post" action="/chat">
+      <textarea name="prompt" required placeholder="Frage an das Ollama Modell"></textarea>
+      <button type="submit">Senden</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Web Suche</h2>
+    <form method="post" action="/search">
+      <input name="query" required placeholder="Suchbegriff" />
+      <button type="submit">Suchen</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Gmail (Compose/Send)</h2>
+    <form method="post" action="/mail">
+      <input name="sender" placeholder="sender@example.com" required />
+      <input name="to" placeholder="empfaenger@example.com" required />
+      <input name="subject" placeholder="Betreff" required />
+      <textarea name="body" placeholder="Inhalt" required></textarea>
+      <label><input type="checkbox" name="approved" value="true"> Versand explizit freigegeben</label>
+      <button type="submit">Mail verarbeiten</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Gateway (Konten)</h2>
+    <form method="post" action="/gateway/register">
+      <input name="service" placeholder="z.B. github" required />
+      <input name="username" required />
+      <input name="password" type="password" required />
+      <button type="submit">Login-Daten speichern</button>
+    </form>
+    <form method="post" action="/gateway/login">
+      <input name="service" placeholder="Service" required />
+      <button type="submit">Login vorbereiten</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <p>Geladene Skills: {{ skills|join(', ') if skills else 'keine' }}</p>
+    <form method="post" action="/skill">
+      <input name="skill_name" placeholder="Skillname" required />
+      <input name="text" placeholder="Input" required />
+      <button type="submit">Skill ausführen</button>
+    </form>
+  </section>
+</body>
+</html>
